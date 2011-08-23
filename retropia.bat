@@ -1,4 +1,45 @@
 @echo off
+%~d0
+cd "%~dp0"
+set VERSION_FILE=version.txt
+
+if not exist %VERSION_FILE% (
+  echo version.txt is missing. Please download a new copy of the client from 
+  echo http://retropia.org
+  goto end
+)
+
+set REMOTE_VERSION=
+set VERSION_CHECK=	
+set /p LOCAL_VERSION= < %VERSION_FILE%
+@for /f "delims=" %%a in ('utils\curl.exe -s --cacert etc\cacert.pem https://raw.github.com/definitelylion/retropia-client/stable/version.txt') do @set REMOTE_VERSION=%%a
+
+@for /f "delims=" %%a in ('utils\compare_versions.exe %LOCAL_VERSION% %REMOTE_VERSION%') do @set VERSION_CHECK=%%a
+
+if not "%VERSION_CHECK%" == "<" goto begin
+
+set /p DOWNLOAD_NEW_VERSION="A new version (v%REMOTE_VERSION%) is available! Press ENTER to download and install..."
+echo.
+echo Downloading... this may take a while.
+echo.
+set DOWNLOAD_LOCATION="%TEMP%\retropia-client-v%REMOTE_VERSION%.zip"
+set DOWNLOAD_UNCOMPRESSED="%TEMP%\retropia-client-v%REMOTE_VERSION%"
+del %DOWNLOAD_LOCATION%
+"utils\curl.exe" -L --cacert "etc\cacert.pem" -o %DOWNLOAD_LOCATION% "https://github.com/definitelylion/retropia-client/zipball/stable"
+echo.
+echo Download complete.
+echo.
+rmdir /S /Q %DOWNLOAD_UNCOMPRESSED%
+"utils\7za" x -y -o%DOWNLOAD_UNCOMPRESSED% %DOWNLOAD_LOCATION% > NUL
+echo If you are using using Windows Vista or Windows 7, you may now be 
+echo presented with a User Account Control (UAC) window. If so, please click 
+echo "Yes" or "Allow".
+cscript //nologo "utils\install.vbs" %DOWNLOAD_UNCOMPRESSED% "%~dp0"
+echo.
+echo Update complete. Please restart the client.
+goto end
+
+:begin
 if "%~1" == "" goto usage
 
 set CONFIGDIR=%APPDATA%\retropia
@@ -50,8 +91,6 @@ echo region=%REGION%>> %CONFIGFILE%
 REM end configuration
 
 :prelaunch
-%~d0
-cd "%~dp0"
 
 cls
 @del "emulators\mednafen\stdout.txt"
