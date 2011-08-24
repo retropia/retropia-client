@@ -50,11 +50,11 @@ set REGION=
 REM default game settings
 
 set S_DEF_NLOCALPLAYERS=1
-set S_DEF_HIDE_GAME=n
+set S_DEF_PROTECT_GAME=n
 set S_DEF_EXTRA_PARAMS=
 
 set S_NLOCALPLAYERS=%S_DEF_NLOCALPLAYERS%
-set S_HIDE_GAME=%S_DEF_HIDE_GAME%
+set S_PROTEECT_GAME=%S_DEF_PROTEECT_GAME%
 set S_EXTRA_PARAMS=%S_DEF_EXTRA_PARAMS%
 
 REM end default game settings
@@ -111,14 +111,14 @@ if "%CHANGESETTINGS%" == "y" goto def_gamesettings
 if "%CHANGESETTINGS%" == "q" goto end
 
 :launch
-set NETHIDDEN=0
-if "%S_HIDE_GAME%" == "y" set NETHIDDEN=1
-"emulators\mednafen\mednafen.exe" -connect -nethost %REGION%.retropia.org -netport 4046 -netnick "%NICK%" -nethidden %NETHIDDEN% -netlocalplayers %S_NLOCALPLAYERS% -netgamekey "%GAMEKEY%" %1
+set NETPROTECT=0
+if "%S_PROTECT_GAME%" == "y" set NETPROTECT=1
+"emulators\mednafen\mednafen.exe" -connect -nethost %REGION%.retropia.org -netport 4046 -netnick "%NICK%" -netprotect %NETPROTECT% -netlocalplayers %S_NLOCALPLAYERS% -netgamekey "%GAMEKEY%" %1
 goto end
 
 :def_gamesettings
 set S_NLOCALPLAYERS=%S_DEF_NLOCALPLAYERS%
-set S_S_HIDE_GAME=%S_DEF_HIDE_GAME%
+set S_PROTECT_GAME=%S_DEF_PROTECT_GAME%
 set S_EXTRA_PARAMS=%S_DEF_EXTRA_PARAMS%
 
 :gamesettings
@@ -127,7 +127,7 @@ cls
 echo GAME SETTINGS
 echo =============
 echo 1. Number of local players = %S_NLOCALPLAYERS% (default: %S_DEF_NLOCALPLAYERS%)
-echo 2. Make game private = %S_HIDE_GAME% (default: %S_DEF_HIDE_GAME%)
+echo 2. Make game protected = %S_PROTECT_GAME% (default: %S_DEF_PROTECT_GAME%)
 echo 3. Additional parameters = "%S_EXTRA_PARAMS%" (default: "%S_DEF_EXTRA_PARAMS%")
 echo. 
 echo Select an option [1-3] and press ENTER. Press 'c' and ENTER continue, 
@@ -156,16 +156,18 @@ goto :gamesettings
 
 :gamesetting_2
 cls
-echo Make game private
-echo =================
+echo Make game protected
+echo ===================
 echo.
-echo If you don't want your game visible in the retropia lobby, set 
-echo this value to "y".
+echo Protected game rooms will not have their name visible in the
+echo lobby. Thus, only people who know the name will be able to
+echo connect. In this case, treat the name like a password and
+echo choose a value that's hard to guess!
 echo.
-echo Current value: %S_HIDE_GAME%
-set /p S_HIDE_GAME_TMP="New value (y/n): "
-if not "%S_HIDE_GAME_TMP%" == "y" if not "%S_HIDE_GAME_TMP%" == "n" goto gamesetting_2
-set S_HIDE_GAME=%S_HIDE_GAME_TMP%
+echo Current value: %S_PROTECT_GAME%
+set /p S_PROTECT_GAME_TMP="New value (y/n): "
+if not "%S_PROTECT_GAME_TMP%" == "y" if not "%S_PROTECT_GAME_TMP%" == "n" goto gamesetting_2
+set S_PROTECT_GAME=%S_PROTECT_GAME_TMP%
 goto :gamesettings
 
 :gamesetting_3
@@ -186,6 +188,8 @@ set /p S_EXTRA_PARAMS="New value (no quotes): "
 goto :gamesettings
 
 :usage
-echo usage: %0 [rom-file]
+echo usage: retropia [rom-file]
 
 :end
+echo.
+pause
