@@ -114,7 +114,7 @@ if "%CHANGESETTINGS%" == "q" goto end
 set NETHIDDEN=0
 if "%S_HIDE_GAME%" == "y" set NETHIDDEN=1
 @echo on
-"emulators\mednafen\mednafen.exe" -snes.input.port1.multitap 1 -snes.input.port2.multitap 1 -connect -nethost %REGION%.retropia.org -netport 4046 -netnick "%NICK%" -nethidden %NETHIDDEN% -netlocalplayers %S_NLOCALPLAYERS% -netgamekey "%GAMEKEY%" %1
+"emulators\mednafen\mednafen.exe" -connect -nethost %REGION%.retropia.org -netport 4046 -netnick "%NICK%" -nethidden %NETHIDDEN% -netlocalplayers %S_NLOCALPLAYERS% -netgamekey "%GAMEKEY%" %1
 goto end
 
 :def_gamesettings
