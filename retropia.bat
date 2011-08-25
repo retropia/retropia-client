@@ -80,9 +80,10 @@ set /p NICK="Nickname: "
 
 :region
 set VALID_REGION=false
-set /p REGION="Region (na/eu): "
-if "%REGION%" == "na" set VALID_REGION=true
+set /p REGION="Region (eu/na-west/na-east): "
 if "%REGION%" == "eu" set VALID_REGION=true
+if "%REGION%" == "na-west" set VALID_REGION=true
+if "%REGION%" == "na-east" set VALID_REGION=true
 if "%VALID_REGION%" == "false" goto region
 
 echo nick=%NICK%> %CONFIGFILE%
