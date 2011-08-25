@@ -24,7 +24,7 @@ echo Downloading... this may take a while.
 echo.
 set DOWNLOAD_LOCATION="%TEMP%\retropia-client-v%REMOTE_VERSION%.zip"
 set DOWNLOAD_UNCOMPRESSED="%TEMP%\retropia-client-v%REMOTE_VERSION%"
-@del %DOWNLOAD_LOCATION% > nul
+@del /Q %DOWNLOAD_LOCATION% > nul
 "utils\curl.exe" -L --cacert "etc\cacert.pem" -o %DOWNLOAD_LOCATION% "https://github.com/definitelylion/retropia-client/zipball/stable"
 echo.
 echo Download complete.
@@ -94,7 +94,7 @@ REM end configuration
 :prelaunch
 
 cls
-@del "emulators\mednafen\stdout.txt" > nul
+@del /Q "emulators\mednafen\stdout.txt" > nul
 "emulators\mednafen\mednafen.exe" -stat %1
 type "emulators\mednafen\stdout.txt"
 echo.
@@ -186,7 +186,7 @@ echo more information about available parameters.
 echo.
 echo Current value: "%S_EXTRA_PARAMS%"
 set /p S_EXTRA_PARAMS="New value (no quotes): "
-goto :gamesettings
+goto gamesettings
 
 :usage
 echo usage: retropia [rom-file]
