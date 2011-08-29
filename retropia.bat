@@ -21,6 +21,14 @@ set /p LOCAL_VERSION= < %VERSION_FILE%
 
 if not "%VERSION_CHECK%" == "<" goto begin
 
+ver | findstr /i "5\.1\." > nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+	echo A new version ^(v%REMOTE_VERSION%^) is available, but automatic
+	echo updates are not supported on Windows XP. Please go to	
+	echo http://retropia.org and download the latest version.
+	goto end
+)
+
 set /p DOWNLOAD_NEW_VERSION="A new version (v%REMOTE_VERSION%) is available! Press ENTER to download and install..."
 echo.
 echo Downloading... this may take a while.
@@ -34,9 +42,9 @@ echo Download complete.
 echo.
 @rmdir /S /Q %DOWNLOAD_UNCOMPRESSED% > nul 2>&1
 "utils\7za" x -y -o%DOWNLOAD_UNCOMPRESSED% %DOWNLOAD_LOCATION% > NUL
-echo If you are using using Windows Vista or Windows 7, you may now be 
-echo presented with a User Account Control (UAC) window. If so, please click 
-echo "Yes" or "Allow".
+echo If you are installing to a system location, you may now be presented 
+echo with a User Account Control (UAC) window. If so, please click "Yes" 
+echo or "Allow".
 cscript //nologo "utils\install.vbs" %DOWNLOAD_UNCOMPRESSED% "%~dp0"
 echo.
 echo Update complete. Please restart the client.
