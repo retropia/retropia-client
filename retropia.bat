@@ -64,12 +64,12 @@ REM end default game settings
 
 REM begin configuration
 
-if not exist %CONFIGFILE% (
+if not exist "%CONFIGFILE%" (
   mkdir "%CONFIGDIR%"
-  type nul > %CONFIGFILE%
+  type nul > "%CONFIGFILE%"
 )
 
-for /F "usebackq tokens=1,2 delims==" %%a in (%CONFIGFILE%) do ( 
+for /F "usebackq tokens=1,2 delims==" %%a in ("%CONFIGFILE%") do ( 
 if %%a==nick set NICK=%%b
 if %%a==region set REGION=%%b
 )
@@ -89,8 +89,8 @@ if "%REGION%" == "na-west" set VALID_REGION=true
 if "%REGION%" == "na-east" set VALID_REGION=true
 if "%VALID_REGION%" == "false" goto region
 
-echo nick=%NICK%> %CONFIGFILE%
-echo region=%REGION%>> %CONFIGFILE%
+echo nick=%NICK%> "%CONFIGFILE%"
+echo region=%REGION%>> "%CONFIGFILE%"
 
 REM end configuration
 
