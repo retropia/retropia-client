@@ -1,2 +1,10 @@
-emulators/mednafen/*
-!emulators/mednafen/mednafen.exe
+emulators/mednafen/cheats
+emulators/mednafen/firmware
+emulators/mednafen/mcm
+emulators/mednafen/mcs
+emulators/mednafen/mcs
+emulators/mednafen/palettes
+emulators/mednafen/sav
+emulators/mednafen/snaps
+emulators/mednafen/*.cfg
+emulators/mednafen/stdout.txt
