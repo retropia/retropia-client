@@ -1,6 +1,7 @@
 @echo off
 %~d0
 cd "%~dp0"
+
 set VERSION_FILE=version.txt
 
 if not exist %VERSION_FILE% (
@@ -40,7 +41,9 @@ echo Update complete. Please restart the client.
 goto end
 
 :begin
-if "%~1" == "" goto usage
+set GAMEFILE="%~1"
+if %GAMEFILE% == "" for /f "delims=" %%F IN ('utils\game_browser.exe') DO SET GAMEFILE="%%F"
+if %GAMEFILE% == "" goto usage
 
 set CONFIGDIR=%APPDATA%\retropia
 set CONFIGFILE=%CONFIGDIR%\config.ini
@@ -95,7 +98,7 @@ REM end configuration
 
 cls
 @del /Q "emulators\mednafen\stdout.txt" > nul
-"emulators\mednafen\mednafen.exe" -stat %1
+"emulators\mednafen\mednafen.exe" -stat %GAMEFILE%
 type "emulators\mednafen\stdout.txt"
 echo.
 
@@ -114,7 +117,7 @@ if "%CHANGESETTINGS%" == "q" goto end
 :launch
 set NETPROTECT=0
 if "%S_PROTECT_GAME%" == "y" set NETPROTECT=1
-"emulators\mednafen\mednafen.exe" -connect -nethost %REGION%.retropia.org -netport 4046 -netnick "%NICK%" -netprotect %NETPROTECT% -netlocalplayers %S_NLOCALPLAYERS% -netgamekey "%GAMEKEY%" %1
+"emulators\mednafen\mednafen.exe" -connect -nethost %REGION%.retropia.org -netport 4046 -netnick "%NICK%" -netprotect %NETPROTECT% -netlocalplayers %S_NLOCALPLAYERS% -netgamekey "%GAMEKEY%" %GAMEFILE%
 goto end
 
 :def_gamesettings
@@ -153,7 +156,7 @@ echo playing against others on retropia, set this value to 2.
 echo.
 echo Current value: %S_NLOCALPLAYERS%
 set /p S_NLOCALPLAYERS="New value: "
-goto :gamesettings
+goto gamesettings
 
 :gamesetting_2
 cls
@@ -169,7 +172,7 @@ echo Current value: %S_PROTECT_GAME%
 set /p S_PROTECT_GAME_TMP="New value (y/n): "
 if not "%S_PROTECT_GAME_TMP%" == "y" if not "%S_PROTECT_GAME_TMP%" == "n" goto gamesetting_2
 set S_PROTECT_GAME=%S_PROTECT_GAME_TMP%
-goto :gamesettings
+goto gamesettings
 
 :gamesetting_3
 cls
@@ -189,7 +192,11 @@ set /p S_EXTRA_PARAMS="New value (no quotes): "
 goto gamesettings
 
 :usage
-echo usage: retropia [rom-file]
+echo You must supply a game file. Please do so by either:
+echo   - selecting the file in the "Open file" dialog  
+echo   - dragging and dropping the game file onto the retropia application 
+echo   - if running from a command prompt, pass the path to the game file
+echo     as a parameter
 
 :end
 echo.
