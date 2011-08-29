@@ -4,7 +4,7 @@ If WScript.Arguments.Count >= 2 Then
   src = WScript.Arguments(0)
   dst = WScript.Arguments(1)
   app = "cmd"
-  params = "/c for /D %D IN (""" & src & "\*"") DO xcopy /Y /E /I /R %D\* """ & dst & """"
+  params = "/c for /D %D IN (""" & src & "\*"") DO xcopy /Y /E /I /R ""%D\*"" """ & dst & """"
 
   Set objWshShell = WScript.CreateObject("WScript.Shell")
   Set objShell = CreateObject("Shell.Application")
