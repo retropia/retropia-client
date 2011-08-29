@@ -2,6 +2,8 @@
 %~d0
 cd "%~dp0"
 
+echo Checking for updates... (this may take a short while)
+echo.
 set VERSION_FILE=version.txt
 
 if not exist %VERSION_FILE% (
@@ -25,12 +27,12 @@ echo Downloading... this may take a while.
 echo.
 set DOWNLOAD_LOCATION="%TEMP%\retropia-client-v%REMOTE_VERSION%.zip"
 set DOWNLOAD_UNCOMPRESSED="%TEMP%\retropia-client-v%REMOTE_VERSION%"
-@del /Q %DOWNLOAD_LOCATION% > nul
+@del /Q %DOWNLOAD_LOCATION% > nul 2>&1
 "utils\curl.exe" -L --cacert "etc\cacert.pem" -o %DOWNLOAD_LOCATION% "https://github.com/definitelylion/retropia-client/zipball/stable"
 echo.
 echo Download complete.
 echo.
-@rmdir /S /Q %DOWNLOAD_UNCOMPRESSED% > nul
+@rmdir /S /Q %DOWNLOAD_UNCOMPRESSED% > nul 2>&1
 "utils\7za" x -y -o%DOWNLOAD_UNCOMPRESSED% %DOWNLOAD_LOCATION% > NUL
 echo If you are using using Windows Vista or Windows 7, you may now be 
 echo presented with a User Account Control (UAC) window. If so, please click 
@@ -97,7 +99,7 @@ REM end configuration
 :prelaunch
 
 cls
-@del /Q "emulators\mednafen\stdout.txt" > nul
+@del /Q "emulators\mednafen\stdout.txt" > nul 2>&1
 "emulators\mednafen\mednafen.exe" -stat %GAMEFILE%
 type "emulators\mednafen\stdout.txt"
 echo.
