@@ -24,7 +24,7 @@ if not "%VERSION_CHECK%" == "<" goto begin
 ver | findstr /i "5\.1\." > nul 2>&1
 if %ERRORLEVEL% EQU 0 (
 	echo A new version ^(v%REMOTE_VERSION%^) is available, but automatic
-	echo updates are not supported on Windows XP. Please go to	
+	echo updates are not yet supported on Windows XP. Please go to	
 	echo http://retropia.org and download the latest version.
 	goto end
 )
@@ -41,7 +41,7 @@ echo.
 echo Download complete.
 echo.
 @rmdir /S /Q %DOWNLOAD_UNCOMPRESSED% > nul 2>&1
-"utils\7za" x -y -o%DOWNLOAD_UNCOMPRESSED% %DOWNLOAD_LOCATION% > NUL
+"utils\7za" x -y -o%DOWNLOAD_UNCOMPRESSED% %DOWNLOAD_LOCATION% > nul
 echo If you are installing to a system location, you may now be presented 
 echo with a User Account Control (UAC) window. If so, please click "Yes" 
 echo or "Allow".
