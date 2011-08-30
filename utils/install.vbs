@@ -4,7 +4,7 @@ If WScript.Arguments.Count >= 2 Then
   src = WScript.Arguments(0)
   dst = WScript.Arguments(1)
   app = "cmd"
-  params = "/c utils\install.bat """ & src & """ """ & dst & """ > nul 2>&1"
+  params = "/c utils\install.bat """ & src & """ """ & dst & """ > update.log 2>&1"
 
   Set objWshShell = WScript.CreateObject("WScript.Shell")
   Set objShell = CreateObject("Shell.Application")

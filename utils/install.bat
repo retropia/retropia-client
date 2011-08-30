@@ -1,3 +1,4 @@
+@echo off
 set UTILSDIR="%~dp0"
 set SOURCE="%~1"
 set TARGET="%~2"
@@ -14,4 +15,4 @@ for /D %%D IN ("%SOURCE%\*") DO (
 	popd
 )
 
-EXIT /B 0
+exit /B 0
