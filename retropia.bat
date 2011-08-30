@@ -27,6 +27,10 @@ set DOWNLOAD_UNCOMPRESSED="%TEMP%\retropia-client-v%REMOTE_VERSION%"
 @del /Q %DOWNLOAD_LOCATION% > nul 2>&1
 "utils\curl.exe" -L --cacert "etc\cacert.pem" -o %DOWNLOAD_LOCATION% "https://github.com/definitelylion/retropia-client/zipball/stable"
 echo.
+if %ERRORLEVEL% NEQ 0 (
+	echo Encountered an error while downloading update. Try again later.
+	goto end
+)
 echo Download complete.
 echo.
 @rmdir /S /Q %DOWNLOAD_UNCOMPRESSED% > nul 2>&1
