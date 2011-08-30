@@ -2,32 +2,21 @@
 %~d0
 cd "%~dp0"
 
+@del /S /A:H *.retropia-old > nul 2>&1
+
 echo Checking for updates... (this may take a short while)
 echo.
 set VERSION_FILE=version.txt
-
-if not exist %VERSION_FILE% (
-  echo version.txt is missing. Please download a new copy of the client from 
-  echo http://retropia.org
-  goto end
-)
+set LOCAL_VERSION="0.0.0"
+if exist %VERSION_FILE% set /p LOCAL_VERSION= < %VERSION_FILE%
 
 set REMOTE_VERSION=
-set VERSION_CHECK=	
-set /p LOCAL_VERSION= < %VERSION_FILE%
+set VERSION_CHECK=
 @for /f "delims=" %%a in ('utils\curl.exe -s --cacert etc\cacert.pem https://raw.github.com/definitelylion/retropia-client/stable/version.txt') do @set REMOTE_VERSION=%%a
 
 @for /f "delims=" %%a in ('utils\compare_versions.exe %LOCAL_VERSION% %REMOTE_VERSION%') do @set VERSION_CHECK=%%a
 
 if not "%VERSION_CHECK%" == "<" goto begin
-
-ver | findstr /i "5\.1\." > nul 2>&1
-if %ERRORLEVEL% EQU 0 (
-	echo A new version ^(v%REMOTE_VERSION%^) is available, but automatic
-	echo updates are not yet supported on Windows XP. Please go to	
-	echo http://retropia.org and download the latest version.
-	goto end
-)
 
 set /p DOWNLOAD_NEW_VERSION="A new version (v%REMOTE_VERSION%) is available! Press ENTER to download and install..."
 echo.
