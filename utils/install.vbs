@@ -4,15 +4,18 @@ If WScript.Arguments.Count >= 2 Then
   src = WScript.Arguments(0)
   dst = WScript.Arguments(1)
   app = "cmd"
-  params = "/c utils\install.bat """ & src & """ """ & dst & """ > update.log 2>&1"
+  testparams = "/c copy /Y NUL > update.log >NUL 2>&1"
+  installparams = "/c utils\install.bat """ & src & """ """ & dst & """ > update.log 2>&1"
 
   Set objWshShell = WScript.CreateObject("WScript.Shell")
   Set objShell = CreateObject("Shell.Application")
   
-  exitCode = objWshShell.Run(app & " " & params, 0, True)
+  exitCode = objWshShell.Run(app & " " & testparams, 0, True)
 
   If exitCode <> 0 Then
-    objShell.ShellExecute app, params, "", "runas", 0
+    objShell.ShellExecute app, installparams, "", "runas", 0
+  Else
+    exitCode = objWshShell.Run(app & " " & installparams, 0, True)
   End If
 
   Set objWshShell = Nothing

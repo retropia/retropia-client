@@ -38,7 +38,7 @@ echo.
 echo If you are installing to a system location, you may now be presented 
 echo with a User Account Control (UAC) window. If so, please click "Yes" 
 echo or "Allow".
-cscript //nologo "utils\install.vbs" %DOWNLOAD_UNCOMPRESSED% "%~dp0"
+@cscript //nologo "utils\install.vbs" %DOWNLOAD_UNCOMPRESSED% "%~dp0" > NUL 2>&1
 echo.
 echo Update complete. Please restart the client.
 goto end
