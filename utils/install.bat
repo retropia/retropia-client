@@ -13,3 +13,5 @@ for /D %%D IN ("%SOURCE%\*") DO (
 	xcopy /Y /E /I /R "%%D\*" "%TARGET%"
 	popd
 )
+
+EXIT /B 0
