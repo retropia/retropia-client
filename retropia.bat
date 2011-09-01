@@ -44,10 +44,6 @@ echo Update complete. Please restart the client.
 goto end
 
 :begin
-set GAMEFILE="%~1"
-if %GAMEFILE% == "" for /f "delims=" %%F IN ('utils\game_browser.exe') DO SET GAMEFILE="%%F"
-if %GAMEFILE% == "" goto usage
-
 set CONFIGDIR=%APPDATA%\retropia
 set CONFIGFILE=%CONFIGDIR%\config.ini
 set NICK=
@@ -98,6 +94,9 @@ echo region=%REGION%>> "%CONFIGFILE%"
 REM end configuration
 
 :prelaunch
+set GAMEFILE="%~1"
+if %GAMEFILE% == "" for /f "delims=" %%F IN ('utils\game_browser.exe') DO SET GAMEFILE="%%F"
+if %GAMEFILE% == "" goto usage
 
 cls
 @del /Q "emulators\mednafen\stdout.txt" > nul 2>&1
