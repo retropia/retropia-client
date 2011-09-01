@@ -2,7 +2,7 @@ set UTILSDIR=%~dps0
 set SOURCE=%~fs1
 set TARGET=%~fs2
 for /D %%D IN ("%SOURCE%\*") DO (
-	pushd 
+	pushd %%~fsD
 	for /F "delims=" %%F IN ('"%UTILSDIR%\find.exe" -type f') DO (
 		if exist "%TARGET%\%%F" (
 			move /Y "%TARGET%\%%F" "%TARGET%\%%F.retropia-old"
