@@ -187,7 +187,7 @@ echo to the emulator, add them here.
 echo.
 echo WARNING: some parameters can cause stability problems! Be careful!
 echo.
-echo HINT: Consult http://mednafen.sourceforge.net/documentation/ for 
+echo HINT: Consult http://retropia.org/docs/mednafen for 
 echo more information about available parameters.
 echo.
 echo Current value: "%S_EXTRA_PARAMS%"
