@@ -99,6 +99,15 @@ set GAMEFILE="%~1"
 if %GAMEFILE% == "" for /f "delims=" %%F IN ('utils\game_browser.exe') DO SET GAMEFILE="%%F"
 if %GAMEFILE% == "" goto usage
 
+SET XTYPE=
+@for /f "delims=" %%a in ('utils\xtype.exe %GAMEFILE%') do @set XTYPE=%%a
+
+if "%XTYPE%" == "DOS" (
+	echo DOS application detected.
+	emulators\dosbox\dosbox.exe %GAMEFILE% -exit -c "IPXNET CONNECT %REGION%.retropia.org" -conf emulators\dosbox\dosbox.conf -noconsole
+	goto end
+)
+
 cls
 @del /Q "emulators\mednafen\stdout.txt" > nul 2>&1
 "emulators\mednafen\mednafen.exe" -stat %GAMEFILE%

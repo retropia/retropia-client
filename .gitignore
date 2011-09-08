@@ -8,4 +8,6 @@ emulators/mednafen/sav
 emulators/mednafen/snaps
 emulators/mednafen/*.cfg
 emulators/mednafen/stdout.txt
+emulators/dosbox/stdout.txt
+emulators/dosbox/stderr.txt
 *.retropia-old
