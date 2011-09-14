@@ -96,13 +96,24 @@ REM end configuration
 
 :prelaunch
 set GAMEFILE="%~1"
-if %GAMEFILE% == "" for /f "delims=" %%F IN ('utils\game_browser.exe') DO SET GAMEFILE="%%F"
+set GAMEFILE_SUFFIX="%~x1"
+if %GAMEFILE% == "" for /f "delims=" %%F IN ('utils\game_browser.exe') DO (
+	SET GAMEFILE="%%F"
+	SET GAMEFILE_SUFFIX="%%~xF"
+)
 if %GAMEFILE% == "" goto usage
 
 SET XTYPE=
 @for /f "delims=" %%a in ('utils\xtype.exe %GAMEFILE%') do @set XTYPE=%%a
 
-if "%XTYPE%" == "DOS" (
+set IS_DOS_APP=0
+if "%XTYPE%" == "DOS" set IS_DOS_APP=1
+if %GAMEFILE_SUFFIX% == ".BAT" set IS_DOS_APP=1
+if %GAMEFILE_SUFFIX% == ".bat" set IS_DOS_APP=1
+if %GAMEFILE_SUFFIX% == ".COM" set IS_DOS_APP=1
+if %GAMEFILE_SUFFIX% == ".com" set IS_DOS_APP=1
+
+if %IS_DOS_APP% EQU 1 (
 	echo DOS application detected.
 	emulators\dosbox\dosbox.exe %GAMEFILE% -exit -c "IPXNET CONNECT %REGION%.retropia.org" -conf emulators\dosbox\dosbox.conf -noconsole
 	goto end
