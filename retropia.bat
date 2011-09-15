@@ -30,7 +30,7 @@ set DOWNLOAD_UNCOMPRESSED="%TEMP%\retropia-client-v%REMOTE_VERSION%"
 echo.
 if %ERRORLEVEL% NEQ 0 (
 	echo Encountered an error while downloading update. Try again later.
-	goto end
+	goto pause_end
 )
 echo Download complete.
 echo.
@@ -42,7 +42,7 @@ echo or "Allow".
 @cscript //nologo "utils\install.vbs" "%~dps0\utils\install.bat" %DOWNLOAD_UNCOMPRESSED% "%~dps0" > NUL 2>&1
 echo.
 echo Update complete. Please restart the client.
-goto end
+goto pause_end
 
 :begin
 set CONFIGDIR=%APPDATA%\retropia
@@ -72,9 +72,11 @@ if not exist "%CONFIGFILE%" (
 for /F "usebackq tokens=1,2 delims==" %%a in ("%CONFIGFILE%") do ( 
 if %%a==nick set NICK=%%b
 if %%a==region set REGION=%%b
+if %%a==cdrom set CDROM=%%b
+if %%a==dosdir set DOSDIR=%%b
 )
 
-if not "%NICK%" == "" if not "%REGION%" == "" goto prelaunch
+if not "%NICK%" == "" if not "%REGION%" == "" if not "%CDROM%" == "" if not "%DOSDIR%" == "" goto prelaunch
 
 cls
 echo CONFIGURATION (FIRST TIME ONLY)
@@ -89,40 +91,68 @@ if "%REGION%" == "na-west" set VALID_REGION=true
 if "%REGION%" == "na-east" set VALID_REGION=true
 if "%VALID_REGION%" == "false" goto region
 
+:cdrom
+set /p CDROM="CD-ROM drive (e.g. D:) or press ENTER : "
+if "%CDROM%" == "" set CDROM=none
+if not "%CDROM%" == "none" (
+	for /f "delims=" %%I IN ('utils\dtype.exe %CDROM%') DO (
+		if not "%%I" == "cdrom" (
+			echo "%CDROM%" is not a CD-ROM drive.
+			goto cdrom
+		)
+	)
+)
+
+:dosdir
+set DOSDIR=
+for /f "delims=" %%D IN ('utils\browse.exe -dir "Select a directory where DOS games will be installed (e.g. C:\DOSGames)"') DO (
+	SET DOSDIR=%%~sD
+)
+if "%DOSDIR%" == "" goto dosdir
+
 echo nick=%NICK%> "%CONFIGFILE%"
 echo region=%REGION%>> "%CONFIGFILE%"
+echo cdrom=%CDROM%>> "%CONFIGFILE%"
+echo dosdir=%DOSDIR%>> "%CONFIGFILE%"
 
+cls
 REM end configuration
 
 :prelaunch
 set GAMEFILE="%~1"
+set GAMEFILE_DIR=%~dps1
+set GAMEFILE_NAME=%~nxs1
 set GAMEFILE_SUFFIX="%~x1"
-if %GAMEFILE% == "" for /f "delims=" %%F IN ('utils\game_browser.exe') DO (
+if %GAMEFILE% == "" for /f "delims=" %%F IN ('utils\browse.exe -file "Select a game file"') DO (
 	SET GAMEFILE="%%F"
+	SET GAMEFILE_DIR=%%~dpsF
+	SET GAMEFILE_NAME=%%~nxsF
 	SET GAMEFILE_SUFFIX="%%~xF"
 )
 if %GAMEFILE% == "" goto usage
 
-SET XTYPE=
-@for /f "delims=" %%a in ('utils\xtype.exe %GAMEFILE%') do @set XTYPE=%%a
-
 set IS_DOS_APP=0
-if "%XTYPE%" == "DOS" set IS_DOS_APP=1
+"utils\file.exe" -b -m etc\msdos_magic %GAMEFILE% | findstr "DOS " >NUL 2>&1
+if %ERRORLEVEL% EQU 0 set IS_DOS_APP=1
 if %GAMEFILE_SUFFIX% == ".BAT" set IS_DOS_APP=1
 if %GAMEFILE_SUFFIX% == ".bat" set IS_DOS_APP=1
 if %GAMEFILE_SUFFIX% == ".COM" set IS_DOS_APP=1
 if %GAMEFILE_SUFFIX% == ".com" set IS_DOS_APP=1
 
+set MOUNTCD=
+if not "%CDROM%" == "none" set MOUNTCD=-c "MOUNT D %CDROM%\ -t cdrom -ioctl"
 if %IS_DOS_APP% EQU 1 (
-	echo DOS application detected.
-	emulators\dosbox\dosbox.exe %GAMEFILE% -exit -c "IPXNET CONNECT %REGION%.retropia.org" -conf emulators\dosbox\dosbox.conf -noconsole
+	echo Launching DOS program...
+	emulators\dosbox\dosbox.exe -c "MOUNT C '%DOSDIR%'" -c "MOUNT X '%GAMEFILE_DIR%'"%MOUNTCD% -c "IPXNET CONNECT %REGION%.retropia.org" -c "X:" -c %GAMEFILE_NAME% -conf emulators\dosbox\dosbox.conf -noconsole
 	goto end
 )
 
 cls
 @del /Q "emulators\mednafen\stdout.txt" > nul 2>&1
 "emulators\mednafen\mednafen.exe" -stat %GAMEFILE%
+set ERRLVLTMP=%ERRORLEVEL%
 type "emulators\mednafen\stdout.txt"
+if not %ERRLVLTMP% EQU 0 goto pause_end
 echo.
 
 :set_gamekey
@@ -221,6 +251,8 @@ echo   - dragging and dropping the game file onto the retropia application
 echo   - if running from a command prompt, pass the path to the game file
 echo     as a parameter
 
-:end
+:pause_end
 echo.
 pause
+
+:end
