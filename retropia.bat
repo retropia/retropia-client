@@ -120,12 +120,14 @@ REM end configuration
 
 :prelaunch
 set GAMEFILE="%~1"
-set GAMEFILE_DIR=%~dps1
+set GAMEFILE_DRIVE=%~d1
+set GAMEFILE_DIR=%~ps1
 set GAMEFILE_NAME=%~nxs1
 set GAMEFILE_SUFFIX="%~x1"
 if %GAMEFILE% == "" for /f "delims=" %%F IN ('utils\browse.exe -file "Select a game file"') DO (
 	SET GAMEFILE="%%F"
-	SET GAMEFILE_DIR=%%~dpsF
+	SET GAMEFILE_DRIVE=%%~dF
+	SET GAMEFILE_DIR=%%~psF
 	SET GAMEFILE_NAME=%%~nxsF
 	SET GAMEFILE_SUFFIX="%%~xF"
 )
@@ -139,11 +141,19 @@ if %GAMEFILE_SUFFIX% == ".bat" set IS_DOS_APP=1
 if %GAMEFILE_SUFFIX% == ".COM" set IS_DOS_APP=1
 if %GAMEFILE_SUFFIX% == ".com" set IS_DOS_APP=1
 
+
 set MOUNTCD=
-if not "%CDROM%" == "none" set MOUNTCD=-c "MOUNT D %CDROM%\ -t cdrom -ioctl"
+if not "%CDROM%" == "none" set MOUNTCD= -c "MOUNT D %CDROM%\ -t cdrom -ioctl"	
+set CHDIR=-c "X:"
+for /f "delims=" %%I IN ('utils\dtype.exe %GAMEFILE_DRIVE%') DO (	
+	if "%%I" == "cdrom" (
+		set CHDIR=-c "D:" -c "cd '%GAMEFILE_DIR%'"
+	)
+)
+
 if %IS_DOS_APP% EQU 1 (
 	echo Launching DOS program...
-	emulators\dosbox\dosbox.exe -c "MOUNT C '%DOSDIR%'" -c "MOUNT X '%GAMEFILE_DIR%'"%MOUNTCD% -c "IPXNET CONNECT %REGION%.retropia.org" -c "X:" -c %GAMEFILE_NAME% -conf emulators\dosbox\dosbox.conf -noconsole
+	emulators\dosbox\dosbox.exe -c "MOUNT C '%DOSDIR%'"%MOUNTCD% -c "MOUNT X '%GAMEFILE_DRIVE%%GAMEFILE_DIR%'" %CHDIR% -c "IPXNET CONNECT %REGION%.retropia.org" -c pause -c "%GAMEFILE_NAME%" -conf emulators\dosbox\dosbox.conf -noconsole
 	goto end
 )
 
