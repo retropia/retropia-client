@@ -153,7 +153,7 @@ for /f "delims=" %%I IN ('utils\dtype.exe %GAMEFILE_DRIVE%') DO (
 
 if %IS_DOS_APP% EQU 1 (
 	echo Launching DOS program...
-	emulators\dosbox\dosbox.exe -c "MOUNT C '%DOSDIR%'"%MOUNTCD% -c "MOUNT X '%GAMEFILE_DRIVE%%GAMEFILE_DIR%'" %CHDIR% -c "IPXNET CONNECT %REGION%.retropia.org" -c pause -c "%GAMEFILE_NAME%" -conf emulators\dosbox\dosbox.conf -noconsole
+	emulators\dosbox\dosbox.exe -c "MOUNT C '%DOSDIR%'"%MOUNTCD% -c "MOUNT X '%GAMEFILE_DRIVE%%GAMEFILE_DIR%'" %CHDIR% -c "IPXNET CONNECT %REGION%.retropia.org" -c "%GAMEFILE_NAME%" -conf emulators\dosbox\dosbox.conf -noconsole
 	goto end
 )
 
