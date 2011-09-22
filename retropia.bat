@@ -158,12 +158,16 @@ if %IS_DOS_APP% EQU 1 (
 
 "utils\file.exe" -b -m etc\msdos_magic %GAMEFILE% | findstr "PE32" >NUL 2>&1
 if %ERRORLEVEL% EQU 0 (
-	echo This game was designed to run on Windows. However, older games may not run reliably (or at all) on modern versions of Windows.
-        echo In a near future, retropia will try to support as many of these games as possible.
-        echo
-        echo If there exists a DOS version of the game you are trying to run, you may using that instead.
-        echo.
-        goto pause_end
+	echo This game was designed to run on Windows.
+	echo.
+	echo Old Windows games may not run reliably ^(or at all^) on modern 
+	echo Windows versions. In a near future, retropia will try to support 
+	echo as many of these games as possible.
+    echo.
+    echo NOTE: If there exists a DOS version of the game you are trying to run, 
+    echo you may using that instead.
+    echo.
+    goto pause_end
 )
 
 cls
