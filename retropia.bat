@@ -141,20 +141,29 @@ if %GAMEFILE_SUFFIX% == ".bat" set IS_DOS_APP=1
 if %GAMEFILE_SUFFIX% == ".COM" set IS_DOS_APP=1
 if %GAMEFILE_SUFFIX% == ".com" set IS_DOS_APP=1
 
-
 set MOUNTCD=
 if not "%CDROM%" == "none" set MOUNTCD= -c "MOUNT D %CDROM%\ -t cdrom -ioctl"	
 set CHDIR=-c "X:"
 for /f "delims=" %%I IN ('utils\dtype.exe %GAMEFILE_DRIVE%') DO (	
 	if "%%I" == "cdrom" (
-		set CHDIR=-c "D:" -c "cd '%GAMEFILE_DIR%'"
+		set CHDIR=-c "D:" -c "cd %GAMEFILE_DIR% "
 	)
 )
 
 if %IS_DOS_APP% EQU 1 (
-	echo Launching DOS program...
+	echo Launching DOS game...
 	emulators\dosbox\dosbox.exe -c "MOUNT C '%DOSDIR%'"%MOUNTCD% -c "MOUNT X '%GAMEFILE_DRIVE%%GAMEFILE_DIR%'" %CHDIR% -c "IPXNET CONNECT %REGION%.retropia.org" -c "%GAMEFILE_NAME%" -conf emulators\dosbox\dosbox.conf -noconsole
 	goto end
+)
+
+"utils\file.exe" -b -m etc\msdos_magic %GAMEFILE% | findstr "PE32" >NUL 2>&1
+if %ERRORLEVEL% EQU 0 (
+	echo This game was designed to run on Windows. However, older games may not run reliably (or at all) on modern versions of Windows.
+        echo In a near future, retropia will try to support as many of these games as possible.
+        echo
+        echo If there exists a DOS version of the game you are trying to run, you may using that instead.
+        echo.
+        goto pause_end
 )
 
 cls
