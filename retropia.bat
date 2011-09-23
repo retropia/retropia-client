@@ -163,11 +163,11 @@ if %ERRORLEVEL% EQU 0 (
 	echo Old Windows games may not run reliably ^(or at all^) on modern 
 	echo Windows versions. In a near future, retropia will try to support 
 	echo as many of these games as possible.
-    echo.
-    echo NOTE: If there exists a DOS version of the game you are trying to run, 
-    echo you may using that instead.
-    echo.
-    goto pause_end
+	echo.
+	echo NOTE: If there exists a DOS version of the game you are trying to run, 
+	echo you may using that instead.
+	echo.
+	goto pause_end
 )
 
 cls
