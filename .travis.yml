@@ -1,0 +1,13 @@
+language: ruby
+rvm:
+  - 1.9.2
+
+install: ./scripts/ci/install.sh
+script: ./scripts/ci/run.sh
+
+notifications:
+  irc:
+    channels:
+      - "irc.oftc.net#retropia"
+    on_success: never
+    on_failure: always

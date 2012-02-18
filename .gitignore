@@ -1,0 +1,10 @@
+build/*
+Makefile.*
+object_script*
+*.cbTemp
+*.cbp
+*.layout
+*.o
+*.log
+*.dmp
+!.gitkeep
