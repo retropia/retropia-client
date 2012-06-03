@@ -12,7 +12,7 @@ if exist %VERSION_FILE% set /p LOCAL_VERSION= < %VERSION_FILE%
 
 set REMOTE_VERSION=
 set VERSION_CHECK=
-@for /f "delims=" %%a in ('utils\curl.exe -s --cacert etc\cacert.pem https://raw.github.com/definitelylion/retropia-client/stable/version.txt') do @set REMOTE_VERSION=%%a
+@for /f "delims=" %%a in ('utils\curl.exe -s --cacert etc\cacert.pem https://raw.github.com/retropia/retropia-client/stable/version.txt') do @set REMOTE_VERSION=%%a
 
 @for /f "delims=" %%a in ('utils\compare_versions.exe %LOCAL_VERSION% %REMOTE_VERSION%') do @set VERSION_CHECK=%%a
 
@@ -26,7 +26,7 @@ set DOWNLOAD_LOCATION="%TEMP%\retropia-client-v%REMOTE_VERSION%.zip"
 set DOWNLOAD_UNCOMPRESSED="%TEMP%\retropia-client-v%REMOTE_VERSION%"
 @for /f "delims=" %%I in ('echo %DOWNLOAD_UNCOMPRESSED%') do SET DOWNLOAD_UNCOMPRESSED=%%~fsI
 @del /Q %DOWNLOAD_LOCATION% > nul 2>&1
-"utils\curl.exe" -# -L --cacert "etc\cacert.pem" -o %DOWNLOAD_LOCATION% "http://retropia.org/download"
+"utils\curl.exe" -# -L --cacert "etc\cacert.pem" -o %DOWNLOAD_LOCATION% "https://github.com/retropia/retropia-client/zipball/stable"
 echo.
 if %ERRORLEVEL% NEQ 0 (
 	echo Encountered an error while downloading update. Please try again later, 
